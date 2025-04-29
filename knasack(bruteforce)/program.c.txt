@@ -1,0 +1,35 @@
+#include <stdio.h>
+
+int n = 5;
+int p[5] = {60, 100, 120, 80, 50};  // Values
+int w[5] = {10, 20, 30, 15, 10};   // Weights
+int W = 50;  // Capacity
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int knapsack(int n, int W) {
+    int max_value = 0;
+    int total_combinations = 1 << n;  // 2^n possible subsets
+
+    for (int i = 0; i < total_combinations; i++) {
+        int total_weight = 0, total_value = 0;
+        for (int j = 0; j < n; j++) {
+            if (i & (1 << j)) {  // Check if the j-th item is included in this subset
+                total_weight += w[j];
+                total_value += p[j];
+            }
+        }
+        if (total_weight <= W) {
+            max_value = max(max_value, total_value);
+        }
+    }
+
+    return max_value;
+}
+
+int main() {
+    printf("Maximum value in knapsack = %d\n", knapsack(n, W));
+    return 0;
+}

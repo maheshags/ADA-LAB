@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define MAX 10
+
+int dist[MAX][MAX];
+int n;
+int visited[MAX];
+int min_cost = INT_MAX;
+int best_path[MAX];
+
+int calculateCost(int path[]) {
+    int cost = 0;
+    for (int i = 0; i < n - 1; i++) {
+        cost += dist[path[i]][path[i + 1]];
+    }
+    cost += dist[path[n - 1]][path[0]];
+    return cost;
+}
+
+void permute(int path[], int k) {
+    if (k == n) {
+        int cost = calculateCost(path);
+        if (cost < min_cost) {
+            min_cost = cost;
+            for (int i = 0; i < n; i++) {
+                best_path[i] = path[i];
+            }
+        }
+        return;
+    }
+
+    for (int i = k; i < n; i++) {
+        int temp = path[k];
+        path[k] = path[i];
+        path[i] = temp;
+
+        permute(path, k + 1);
+
+        temp = path[k];
+        path[k] = path[i];
+        path[i] = temp;
+    }
+}
+
+int main() {
+    printf("Enter number of cities: ");
+    scanf("%d", &n);
+
+    printf("Enter the distance matrix:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &dist[i][j]);
+        }
+    }
+
+    int path[MAX];
+    for (int i = 0; i < n; i++) {
+        path[i] = i;
+    }
+
+    permute(path, 0);
+
+    printf("The minimum cost is: %d\n", min_cost);
+    printf("The best path is: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", best_path[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
